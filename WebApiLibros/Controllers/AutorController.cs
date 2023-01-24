@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using WebApiLibros.Data;
 using WebApiLibros.Moldes;
 
 namespace WebApiLibros.Controllers
@@ -9,6 +10,12 @@ namespace WebApiLibros.Controllers
     [ApiController]
     public class AutorController : ControllerBase
     {
+        private readonly DBLibrosContext context;
+
+        public AutorController(DBLibrosContext context)
+        {
+            this.context = context;
+        }
         //GET: api/autor/33
         [HttpGet("listado/{edad}")]//ruta personalizada
         public ActionResult<IEnumerable<Autor>> GetEdad(int edad)
