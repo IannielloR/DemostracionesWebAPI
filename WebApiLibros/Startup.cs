@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 using WebApiLibros.Data;
+using Newtonsoft.Json;
 
 namespace WebApiLibros
 {
@@ -28,6 +29,10 @@ namespace WebApiLibros
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DBLibrosContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeyDBLibros")));
+
+            services.AddMvc().AddNewtonsoftJson(
+                       o => o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
             services.AddControllers();
         }
 

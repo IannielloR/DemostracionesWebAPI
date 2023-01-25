@@ -8,72 +8,90 @@ using WebApiLibros.Moldes;
 
 namespace WebApiLibros.Controllers
 {
-    //api/Autor
     [Route("api/[controller]")]
     [ApiController]
-    public class AutorController : ControllerBase
+    public class LibroController : ControllerBase
     {
-        //inyección de dependencia----inicia
-        //propiedad
-        private readonly DBLibrosContext _context;
-        //contructor 
-        public AutorController(DBLibrosContext context)
+        private readonly DBLibrosContext context;
+
+        public LibroController(DBLibrosContext context)
         {
-
-            this._context = context;
-
+            this.context = context;
         }
-        //inyección de dependencia----fin
-        //GET: api/autor
+        // Get
         [HttpGet]
-        public ActionResult<IEnumerable<Autor>> Get()
+        public ActionResult<IEnumerable<Libro>> GetClinica()
         {
-            return context.Autores.ToList();
+            return context.Libros.ToList();
+        }
+        //Get por Id
+        [HttpGet("{id}")]
+        public ActionResult<Libro> GetByID(int id)
+        {
+            Libro libro = (from l in context.Libros
+                           where id == l.Id
+                           select l).SingleOrDefault();
+            return libro;
         }
 
-
-        // GET api/autor/5
-        [HttpGet]
-        public ActionResult<Autor> GetbyId(int id)
+        //Get por AutorId
+        [HttpGet("autor/{Id}")]
+        public ActionResult<IEnumerable<Libro>> GetByAutorID(int id)
         {
-            Autor autor = (from a in context.Autores
-                           where a.IdAutor == id
-                           select a).SingleOrDefault();
-
-            return autor;
-
+            List<Libro> libros = (from l in context.Libros
+                           where id == l.AutorId
+                           select l).ToList();
+            return libros;
         }
-        //POST api/autor
+        //UPDATE
+        //PUT api/autor/{id}
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, Libro libro)
+        {
+            if (id != libro.Id)
+            {
+                return BadRequest();
+            }
+
+            context.Entry(libro).State = EntityState.Modified;
+            context.SaveChanges();
+            return Ok();
+        }
+
+        //INSERT
         [HttpPost]
-        public ActionResult Post(Autor autor)
+        public ActionResult Post(Libro libro)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            context.Autores.Add(autor);
+
+            context.Libros.Add(libro);
             context.SaveChanges();
             return Ok();
         }
 
-        //UPDATE
-        // PUT api/autor/2
-        [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Autor autor)
+        //DELETE
+        //DELETE api/autor/{id}
+        [HttpDelete("{id}")]
+        public ActionResult<Libro> Delete(int id)
         {
-            if (id != autor.IdAutor)
+            var libro = (from p in context.Libros
+                         where p.Id == id
+                            select p).SingleOrDefault();
+
+            if (libro == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            context.Entry(autor).State = EntityState.Modified;
+            context.Libros.Remove(libro);
             context.SaveChanges();
 
-            return Ok();
+            return libro;
 
         }
-
-
     }
 }
 

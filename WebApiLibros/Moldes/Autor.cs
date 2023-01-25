@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using WebApiLibros.Validations;
 namespace WebApiLibros.Moldes
 {
     [Table("Autor")]
@@ -10,8 +11,10 @@ namespace WebApiLibros.Moldes
     {
         [Key]
         public int IdAutor { get; set; }
-        [Required]
+        [Required(ErrorMessage = "El Nombre es campo obligatorio")]
+
         [Column(TypeName = "varchar(50)")]
+        [PrimeraLetraMayusculaAtributte]
         public string Nombre { get; set; }
         [Required]
         [Column(TypeName = "varchar(50)")]
@@ -21,6 +24,9 @@ namespace WebApiLibros.Moldes
         public int? Edad { get; set; }
 
         public List<Libro> Libros { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime FechaDeNacimiento { get; set; }
 
     }
 
